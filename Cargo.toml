@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "rusty-mud-client",
+    "rusty-mud-server"
+]
