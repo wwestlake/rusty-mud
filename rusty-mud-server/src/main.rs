@@ -1,12 +1,21 @@
 use std::thread;
 use std::net::{TcpListener, TcpStream, Shutdown};
 use std::io::{Read, Write};
+use rusty_mud_common::*;
+
 
 fn handle_client(mut stream: TcpStream) {
-    let mut data = [0 as u8; 50]; // using 50 byte buffer
+    let mut data = [0 as u8; 1024]; // using 50 byte buffer
     while match stream.read(&mut data) {
         Ok(size) => {
-            // echo everything!
+            let msg = Message::deserialize(std::str::from_utf8( &data[0..size] ).unwrap());
+            match msg {
+                Ok(m) => {
+                    println!("{:#?}", m);
+                },
+                Err(err) => println!("Error: {}", err),
+            }            
+    
             stream.write(&data[0..size]).unwrap();
             true
         },
