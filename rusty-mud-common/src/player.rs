@@ -3,6 +3,7 @@ use pwhash::bcrypt;
 extern crate zxcvbn;
 use zxcvbn::{zxcvbn, time_estimates::CrackTimes};
 
+#[derive(Debug)]
 pub enum Email {
     Raw(String),
     Validated(String),
@@ -27,8 +28,8 @@ impl Email {
 
     }
 
-        /// todo: need to actually verify token
-        pub fn verify(self, token: i32) -> Self {
+    /// todo: need to actually verify token
+    pub fn verify(self, token: i32) -> Self {
         match self {
             Self::Validated(em) => Self::Verified(em),
             _ => self
@@ -40,6 +41,38 @@ impl Email {
     }
 
 }
+
+#[derive(Debug)]
+pub enum Password {
+    Hashed(String, u8, CrackTimes),
+    Invalid(String, u8, CrackTimes)
+}
+
+impl Password {
+    pub fn new(password: String) -> Self {
+        let estimate = zxcvbn(&password, &[]).unwrap();
+        if estimate.score() > 2 {
+            Password::Hashed(bcrypt::hash(password).unwrap(), estimate.score(), estimate.crack_times())
+        } else {
+            Password::Invalid(String::from("Your password is not strong, please make it more complex"), estimate.score(), estimate.crack_times())
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct PlayerAccount {
+    id: i64,
+    email: Email,
+    password: Password
+}
+
+impl PlayerAccount {
+    pub fn new(id: i64, email: Email, password: Password) -> Self {
+        Self { id: id, email: email, password: password }
+    }
+}
+
+
 
 
 #[cfg(test)]
