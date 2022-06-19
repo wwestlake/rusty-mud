@@ -1,9 +1,17 @@
 use regex::Regex;
 use pwhash::bcrypt;
 extern crate zxcvbn;
-use zxcvbn::{zxcvbn, time_estimates::CrackTimes};
+use zxcvbn::zxcvbn;
+//use serde_json::Result;
+use uuid::Uuid;
+use reindeer::{Db, Serialize, Deserialize, Entity, Error};
+use directories::{
+    UserDirs,
+    BaseDirs,
+    ProjectDirs
+};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Email {
     Raw(String),
     Validated(String),
@@ -42,35 +50,78 @@ impl Email {
 
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Password {
-    Hashed(String, u8, CrackTimes),
-    Invalid(String, u8, CrackTimes)
+    Hashed(String, u8, u64),
+    Invalid(String, u8, u64)
 }
 
 impl Password {
     pub fn new(password: String) -> Self {
         let estimate = zxcvbn(&password, &[]).unwrap();
         if estimate.score() > 2 {
-            Password::Hashed(bcrypt::hash(password).unwrap(), estimate.score(), estimate.crack_times())
+            Password::Hashed(bcrypt::hash(password).unwrap(), estimate.score(), estimate.crack_times().guesses())
         } else {
-            Password::Invalid(String::from("Your password is not strong, please make it more complex"), estimate.score(), estimate.crack_times())
+            Password::Invalid(String::from("Your password is not strong, please make it more complex"), estimate.score(), estimate.crack_times().guesses())
         }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum PlayerRoles {
+    Owner,
+    Admin,
+    Moderator,
+    Player,
+    Disabled
+}
+
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerAccount {
-    id: i64,
+    id: String,
     email: Email,
-    password: Password
+    password: Password,
+    role: PlayerRoles
+}
+
+impl Entity for PlayerAccount {
+    type Key = String;
+    fn store_name() -> &'static str {
+        "PlayerAccounts"
+    }
+    fn get_key(&self) -> &Self::Key {
+        &self.id
+    }
+    fn set_key(&mut self, key : &Self::Key) {
+        self.id = key.clone();
+    } 
 }
 
 impl PlayerAccount {
-    pub fn new(id: i64, email: Email, password: Password) -> Self {
-        Self { id: id, email: email, password: password }
+    pub fn new(email: &str, password: &str, role: PlayerRoles) -> Self {
+        Self { 
+            id: Uuid::new_v4().to_string(), 
+            email: Email::process(email.to_owned()), 
+            password: Password::new(password.to_owned()), 
+            role: role 
+        }
+    }
+
+    pub fn init(db: &Db) -> Result<(), Error> {
+        Self::register(db)
+    }
+
+    pub fn all(db: &Db) -> Result<Vec<PlayerAccount>, Error> {
+        PlayerAccount::get_all(db)
+    }
+
+    pub fn store(&self, db: &Db) -> Result<(), Error> {
+        self.save(db)
     }
 }
+
+
 
 
 
@@ -84,8 +135,10 @@ mod tests {
         let address = "someone@someplace.com".to_string();
         let email = Email::process(address);
         match email {
-            Email::Validated(addr) => assert!(true),
-            _ => assert!(false, "email was invalid")
+            Email::Validated(_) => assert!(true),
+            Email::Raw(addr) => assert!(false, "email was still raw {}", addr),
+            Email::Invalid(addr) => assert!(false, "email was invalid {}", addr),
+            Email::Verified(addr) => assert!(false, "email was verified {}", addr)
         }
     }
 
@@ -94,8 +147,10 @@ mod tests {
         let address = "someone_someplace.com".to_string();
         let email = Email::process(address);
         match email {
-            Email::Invalid(addr) => assert!(true),
-            _ => assert!(false, "email was invalid")
+            Email::Invalid(_) => assert!(true),
+            Email::Validated(addr) => assert!(false, "email was valid {}", addr),
+            Email::Raw(addr) => assert!(false, "email was still raw {}", addr),
+            Email::Verified(addr) => assert!(false, "email was verified {}", addr)
         }
     }
 
