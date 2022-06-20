@@ -10,12 +10,10 @@ fn main() {
     match db {
         Some(db) => {
             init_all(&db);
-            let user = PlayerAccount::new("test@tester.com", "thisisapasswordofsomestrength", PlayerRoles::Admin);
-            user.store(&db);
-            let all_users = PlayerAccount::all(&db);
-            for user in all_users {
-                println!("{:#?}", user);
-            }
+            //let user = PlayerAccount::new("test@tester.com", "thisisapasswordofsomestrength", PlayerRoles::Admin);
+            //user.store(&db);
+            let result = PlayerAccount::authenticate(&db, "test@tester.com", "thisisapasswordofsomestrength");
+            println!("{}", result);
         },
         None => todo!(),
     }

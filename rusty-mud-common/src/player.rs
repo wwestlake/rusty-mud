@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use regex::Regex;
 use pwhash::bcrypt;
 extern crate zxcvbn;
@@ -47,6 +49,16 @@ impl Email {
     pub fn process(email: String) -> Self {
         Self::new(email).validate()
     }
+
+    pub fn compare(&self, email: &str) -> bool {
+        match self {
+            Email::Raw(em) => em == email,
+            Email::Validated(em) => em == email,
+            Email::Verified(em) => em == email,
+            _ => false
+        }
+    }
+
 
 }
 
@@ -119,6 +131,24 @@ impl PlayerAccount {
     pub fn store(&self, db: &Db) -> Result<(), Error> {
         self.save(db)
     }
+
+    pub fn authenticate(db: &Db, email: &str, password: &str) -> bool {
+        let acc = PlayerAccount::get_with_filter(|acc|acc.email.compare(email), db);
+        match acc {
+            Ok(players) => if players.len() > 0 {
+                let player = &players[0];
+                match &player.password {
+                    Password::Hashed(hash, _, _) => {
+                        return bcrypt::verify(password, &hash)
+                    },
+                    _ => false
+                }
+            } else { false }
+            _ => false,
+
+        }
+    }
+
 }
 
 
