@@ -20,3 +20,5 @@ uuid = { version = "1.1.2", features = [
     "serde",
 ]}
 reindeer = "0.1.2"
+handlebars = "4.3.1"
+rand = "0.8.5"

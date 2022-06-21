@@ -92,9 +92,11 @@ pub enum PlayerRoles {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerAccount {
     id: String,
+    nickname: String,
     email: Email,
     password: Password,
-    role: PlayerRoles
+    role: PlayerRoles,
+    token: Option<String>,
 }
 
 impl Entity for PlayerAccount {
@@ -111,12 +113,14 @@ impl Entity for PlayerAccount {
 }
 
 impl PlayerAccount {
-    pub fn new(email: &str, password: &str, role: PlayerRoles) -> Self {
+    pub fn new(email: &str, password: &str, nickname: &str, role: PlayerRoles) -> Self {
         Self { 
             id: Uuid::new_v4().to_string(), 
             email: Email::process(email.to_owned()), 
             password: Password::new(password.to_owned()), 
-            role: role 
+            role: role,
+            nickname: nickname.to_owned(),
+            token: None 
         }
     }
 
@@ -129,6 +133,28 @@ impl PlayerAccount {
     }
 
     pub fn store(&self, db: &Db) -> Result<(), Error> {
+        self.save(db)
+    }
+
+    pub fn get_nickname(&self) -> String {
+        self.nickname.to_owned()
+    } 
+
+    pub fn get_email(&self) -> String {
+        match &self.email {
+            Email::Raw(em) => em.to_owned(),
+            Email::Validated(em) => em.to_owned(),
+            Email::Verified(em) => em.to_owned(),
+            _ => "".to_owned()
+        }
+    }
+
+    pub fn get_player(db: &Db, email: &str) -> Result<Vec<Self>, Error> {
+        PlayerAccount::get_with_filter(|acc|acc.email.compare(email), db)
+    }
+
+    pub fn add_token(&mut self, db: &Db, token: &str) -> Result<(), Error> {
+        self.token = Some(token.to_owned());
         self.save(db)
     }
 
