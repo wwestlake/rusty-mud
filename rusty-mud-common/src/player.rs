@@ -1,5 +1,5 @@
 use std::hash::Hash;
-
+use crate::general::*;
 use regex::Regex;
 use pwhash::bcrypt;
 extern crate zxcvbn;
@@ -108,6 +108,7 @@ impl Entity for PlayerAccount {
         &self.id
     }
     fn set_key(&mut self, key : &Self::Key) {
+        
         self.id = key.clone();
     } 
 }
