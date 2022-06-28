@@ -12,6 +12,8 @@ use directories::{
     BaseDirs,
     ProjectDirs
 };
+use crate::items::*;
+
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Email {
