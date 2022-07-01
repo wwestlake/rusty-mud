@@ -8,7 +8,7 @@
 
 To contribute to this project follow this procedure:
 
-1. Fork the [wwestlake/rusty-mu](https://github.com/wwestlake/rusty-mud) repository.
+1. Fork the [wwestlake/rusty-mud](https://github.com/wwestlake/rusty-mud) repository.
 2. Clone your fork of the repository to your system and configure it.
     1. git clone [your-repo-url]
     2. git remote add upstream git@github.com:wwestlake/rusty-mud.git
