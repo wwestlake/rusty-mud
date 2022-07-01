@@ -3,5 +3,6 @@
 members = [
     "rusty-mud-client",
     "rusty-mud-server",
-    "rusty-mud-common"
+    "rusty-mud-common",
+    "rusty-mud-cli"
 ]
