@@ -6,7 +6,7 @@ extern crate zxcvbn;
 use zxcvbn::zxcvbn;
 //use serde_json::Result;
 use uuid::Uuid;
-use reindeer::{Db, Serialize, Deserialize, Entity, Error};
+use reindeer::{Db, Serialize, Deserialize, Entity, Error };
 use directories::{
     UserDirs,
     BaseDirs,
