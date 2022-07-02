@@ -1,7 +1,15 @@
+use clap::Parser;
 use rusty_mud_common::network::*;
 use rusty_mud_common::process::*;
 
+mod args;
+
+use args::*;
+
 fn main() {
-    let server = TcpServerSpec::new("local", "Local connection", "localhost", 9876);
+
+    let args = ServerConfig::parse();
+
+    let server = TcpServerSpec::new(&args.name, &args.description, &args.address, &args.port);
     server.start();
 }

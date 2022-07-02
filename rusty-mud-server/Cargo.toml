@@ -1,4 +1,6 @@
 [package]
+author = "William Westlake"
+description = "Rusty MUD Server"
 name = "rusty-mud-server"
 version = "0.1.0"
 edition = "2021"
@@ -7,3 +9,4 @@ edition = "2021"
 
 [dependencies]
 rusty-mud-common = { path = "../rusty-mud-common" }
+clap = { version = "3.2.8", features = ["derive", "yaml"] }
