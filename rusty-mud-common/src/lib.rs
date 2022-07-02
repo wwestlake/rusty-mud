@@ -17,7 +17,7 @@ pub mod general {
 
 pub mod init_entities {
     use reindeer::Db;
-    use crate::network::TcpServerSpec;
+    use crate::network::tcpip_server::TcpServerSpec;
 
     use super::player::*;
 

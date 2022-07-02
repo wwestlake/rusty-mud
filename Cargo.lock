@@ -846,6 +846,7 @@ name = "rusty-mud-cli"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "rusty-mud-common",
 ]
 
 [[package]]

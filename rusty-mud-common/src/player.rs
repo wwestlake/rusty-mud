@@ -90,6 +90,20 @@ pub enum PlayerRoles {
     Disabled
 }
 
+impl PlayerRoles {
+    pub fn from_str(role: &str) -> Result<Self, String> {
+        match role.to_lowercase().as_ref() {
+            "owner" => Ok(Self::Owner),
+            "admin" => Ok(Self::Admin),
+            "moderator" => Ok(Self::Moderator),
+            "mod" => Ok(Self::Moderator),
+            "player" => Ok(Self::Player),
+            "disabled" => Ok(Self::Disabled),
+            _ => Err(format!("Unknown user role: {}",role.to_owned()))
+        }
+    }
+}
+
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerAccount {

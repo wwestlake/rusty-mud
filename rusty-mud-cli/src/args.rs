@@ -41,6 +41,7 @@ pub struct UserCommand {
 
 #[derive(Debug, Subcommand)]
 pub enum UserSubcommand {
+    List,
     Create(CreateUser),
     Delete(DeleteUser),
     Auth(AuthUser),
@@ -50,30 +51,31 @@ pub enum UserSubcommand {
 
 #[derive(Debug, Args)]
 pub struct CreateUser {
-    name: String,
-    email: String,
-    password: String
+    pub name: String,
+    pub email: String,
+    pub password: String,
+    pub role: String,
 }
 
 #[derive(Debug, Args)]
 pub struct DeleteUser {
-    id: String
+    pub id: String
 }
 
 #[derive(Debug, Args)]
 pub struct AuthUser {
-    id: String,
-    auth: String
+    pub id: String,
+    pub auth: String
 }
 
 #[derive(Debug, Args)]
 pub struct JailUser {
-    id: String
+    pub id: String
 }
 
 #[derive(Debug, Args)]
 pub struct UnjailUser {
-    id: String
+    pub id: String
 }
 
 
