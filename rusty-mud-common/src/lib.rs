@@ -1,6 +1,8 @@
 
 pub mod player;
 pub mod database;
+pub mod random;
+pub mod character;
 
 
 pub mod init_entities {
