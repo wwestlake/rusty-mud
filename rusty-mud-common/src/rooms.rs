@@ -66,17 +66,5 @@ impl Room {
         }
     }
 
-    pub fn go(&self, direciton: &Direction) -> &Room {
-        // look in exits for valid directon
-        // if not available return this room
-
-        // get new location self.location.go(direction)
-
-        // find room in database based on direction:
-            // check local cache first -> room
-            // check database
-            // return room
-        self
-    }
 }
 

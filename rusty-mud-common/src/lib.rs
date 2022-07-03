@@ -3,6 +3,8 @@ pub mod player;
 pub mod database;
 pub mod email;
 pub mod rooms;
+pub mod random;
+pub mod character;
 
 pub mod general {
 
