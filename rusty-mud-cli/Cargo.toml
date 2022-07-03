@@ -11,4 +11,4 @@ license = "MIT"
 [dependencies]
 clap = { version = "3.2.8", features = ["derive", "yaml"] }
 rusty-mud-common = { path = "../rusty-mud-common" }
-
+prettytable-rs = "0.8.0"

@@ -28,6 +28,15 @@ impl Email {
         Self::Raw(email)                 
     }
     
+    pub fn to_string(&self) -> String {
+        match self {
+            Self::Raw(s) => format!("Raw({})", s.to_owned()),
+            Self::Validated(s) => format!("Validated({})", s.to_owned()),
+            Self::Verified(s) => format!("Verified({})", s.to_owned()),
+            Self::Invalid(s) => format!("Invalid({})", s.to_owned()),
+        }
+    }
+
     pub fn validate(self) -> Self {
         let email_regex = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").unwrap();
         match self {
@@ -102,17 +111,28 @@ impl PlayerRoles {
             _ => Err(format!("Unknown user role: {}",role.to_owned()))
         }
     }
+
+    pub fn to_string(&self) -> String {
+        match self {
+            Self::Owner => "Owner".to_owned(),
+            Self::Admin => "Admin".to_owned(),
+            Self::Moderator => "Moderator".to_owned(),
+            Self::Player => "Player".to_owned(),
+            Self::Disabled => "Disabled".to_owned()
+        }
+    }
+
 }
 
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerAccount {
-    id: String,
-    nickname: String,
-    email: Email,
-    password: Password,
-    role: PlayerRoles,
-    token: Option<String>,
+    pub id: String,
+    pub nickname: String,
+    pub email: Email,
+    pub password: Password,
+    pub role: PlayerRoles,
+    pub token: Option<String>,
 }
 
 impl Entity for PlayerAccount {
