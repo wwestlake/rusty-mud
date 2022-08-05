@@ -5,7 +5,7 @@ use rusty_mud_common::{
     //email::*,
     init_entities::{*, self}
 };
-
+// simple comment
 fn main() {
     let db = open_database();
     match db {
