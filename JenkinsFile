@@ -4,15 +4,21 @@ pipeline {
     stages {
 
         stage("build") {
-            echo "building application..."
+            steps {
+                echo "building application..."
+            }
         }
 
         stage("test") {
-            echo "testing application..."
+            steps {        
+                echo "testing application..."
+            }
         }
 
         stage("stage to QA") {
-            echo "staging application to QA server"
+            steps {
+                echo "staging application to QA server"
+            }
         }        
     }
 
