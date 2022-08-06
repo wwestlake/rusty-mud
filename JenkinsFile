@@ -1,11 +1,18 @@
 pipeline {
     agent any
 
+    environment {
+        QA_CREDENTIALS = credentials('qa_server')
+        PROD_CREDENTIALS = credentials('prod')
+    }
+
     stages {
 
         stage("build") {
             steps {
                 echo "building application..."
+                echo "QA {QA_CREDENTIALS}"
+                echo "QA {PROD_CREDENTIALS}"
             }
         }
 
@@ -16,10 +23,27 @@ pipeline {
         }
 
         stage("stage to QA") {
+            when {
+                expression {
+                    BRANCH_NAME == 'dev'
+                }
+            }
             steps {
                 echo "staging application to QA server"
             }
-        }        
+        }
+
+        stage("Deploy to Prod") {
+            when {
+                expression {
+                    BRANCH_NAME == 'main'
+                }
+            }
+            steps {
+                echo "staging application to QA server"
+            }
+        }
+
     }
 
 
