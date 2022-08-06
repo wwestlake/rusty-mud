@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    
+    stages {
+        
+        stage("build") {
+            echo "building application..."
+        )
+        
+        stage("test") {
+            echo "testing application..."
+        }
+
+        stage("stage to QA") {
+            echo "staging application to QA server"
+        }        
+    }
+    
+    
+}
