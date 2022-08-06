@@ -11,10 +11,9 @@ fn main() {
     match db {
         Some(db) => {
             init_all(&db);
-            //let user = PlayerAccount::new("test@tester.com", "thisisapasswordofsomestrength", "LagDaemon", PlayerRoles::Admin);
-            //user.store(&db);
+            let user = PlayerAccount::new(&db, "test@tester.com", "thisisapasswordofsomestrength", "LagDaemon", PlayerRoles::Admin);
+            user.store(&db);
             let result = PlayerAccount::authenticate(&db, "test@tester.com", "thisisapas7swordofsomestrength");
-            //println!("{}", result);
             let mut player = PlayerAccount::get_player(&db, "test@tester.com");
             println!("{:#?}", &player);
             match player {

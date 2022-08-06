@@ -4,10 +4,8 @@ pub mod database;
 pub mod email;
 pub mod rooms;
 pub mod items;
+pub mod general;
 
-pub mod general {
-
-}
 
 
 pub mod init_entities {

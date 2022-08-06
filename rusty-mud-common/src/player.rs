@@ -6,7 +6,7 @@ extern crate zxcvbn;
 use zxcvbn::zxcvbn;
 //use serde_json::Result;
 use uuid::Uuid;
-use reindeer::{Db, Serialize, Deserialize, Entity, Error};
+use reindeer::{Db, Serialize, Deserialize, Entity, Error, AutoIncrementEntity};
 use directories::{
     UserDirs,
     BaseDirs,
@@ -93,7 +93,7 @@ pub enum PlayerRoles {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerAccount {
-    id: String,
+    id: u32,
     nickname: String,
     email: Email,
     password: Password,
@@ -102,7 +102,7 @@ pub struct PlayerAccount {
 }
 
 impl Entity for PlayerAccount {
-    type Key = String;
+    type Key = u32;
     fn store_name() -> &'static str {
         "PlayerAccounts"
     }
@@ -116,15 +116,17 @@ impl Entity for PlayerAccount {
 }
 
 impl PlayerAccount {
-    pub fn new(email: &str, password: &str, nickname: &str, role: PlayerRoles) -> Self {
-        Self { 
-            id: Uuid::new_v4().to_string(), 
+    pub fn new(db: &Db, email: &str, password: &str, nickname: &str, role: PlayerRoles) -> Self {
+        let mut ent = Self {
+            id: 0, 
             email: Email::process(email.to_owned()), 
             password: Password::new(password.to_owned()), 
             role: role,
             nickname: nickname.to_owned(),
             token: None 
-        }
+        };
+        ent.save_next(db);
+        ent
     }
 
     pub fn init(db: &Db) -> Result<(), Error> {
