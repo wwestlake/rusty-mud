@@ -11,8 +11,8 @@ pipeline {
         stage("build") {
             steps {
                 echo "building application..."
-                echo "QA {QA_CREDENTIALS}"
-                echo "QA {PROD_CREDENTIALS}"
+                echo "QA ${QA_CREDENTIALS}"
+                echo "QA ${PROD_CREDENTIALS}"
             }
         }
 
