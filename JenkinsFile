@@ -28,6 +28,11 @@ pipeline {
             }
             steps {
                 echo "staging application to QA server"
+                withCredentials([
+                    usernamePassword(credentials: 'qa_server', usernameVariable: USER, passwordVariable: PWD)    
+                ]) {
+                     plink.exe -ssh ${USER}@10.0.0.12 -pw ${PWD} echo "Test"
+                }
             }
         }
 
